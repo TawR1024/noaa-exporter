@@ -9,7 +9,8 @@ import (
 )
 
 const VMMETRICS_PATH = "/api/v1/import/csv?format="
-const NOAA_DATA_FORMAT = "1:time:custom:2006-01-02 15:04:05.000,2:metric:bx_gsm,3:metric:by_gsm,4:metric:bz_gsm,5:metric:lon_gsm,6:metric:lat_gsm,7:metric:bt"
+const NOAA_MAGNITUDE_FORMAT = "1:time:custom:2006-01-02 15:04:05.000,2:metric:bx_gsm,3:metric:by_gsm,4:metric:bz_gsm,5:metric:lon_gsm,6:metric:lat_gsm,7:metric:bt"
+const NOAA_PLASMA_FORMAT = "1:time:custom:2006-01-02 15:04:05.000,2:metric:density,3:metric:speed,4:metric:temperature"
 
 // SendCSVMetrics imports csv data to victoria-metrics.
 func (vm *VMMetricsClient) SendCSVMetrics(ctx context.Context, format, data string) error {

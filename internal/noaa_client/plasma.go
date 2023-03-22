@@ -8,12 +8,12 @@ import (
 	"strings"
 )
 
-const NOAA_DAILY_MAG = "mag-1-day.json"
+const NOAA_PLASMA = "plasma-1-day.json"
 
-func (nc *NoaaClient) GetDailyMagnitude() *ResponseResult {
+func (nc *NoaaClient) GetPDailyPlasma() *ResponseResult {
 	log.Println("getting daily data")
 	ctx := context.Background()
-	result, err := nc.DoRequest(ctx, http.MethodGet, NOAA_DAILY_MAG, nil)
+	result, err := nc.DoRequest(ctx, http.MethodGet, NOAA_PLASMA, nil)
 	if err != nil {
 		log.Fatal("some errors during request")
 	}
@@ -21,9 +21,9 @@ func (nc *NoaaClient) GetDailyMagnitude() *ResponseResult {
 	return result
 }
 
-func ScrapeMagnitudeData(noaaClient *NoaaClient, vmetriClient *victoria.VMMetricsClient) {
-	log.Println("scraping daily magnitude data")
-	dailyResponse := noaaClient.GetDailyMagnitude()
+func ScrapePlasmaData(noaaClient *NoaaClient, vmetriClient *victoria.VMMetricsClient) {
+	log.Println("scraping daily plasma data")
+	dailyResponse := noaaClient.GetPDailyPlasma()
 
 	var responseBody [][]string
 	if err := dailyResponse.ExtractResult(&responseBody); err != nil {
@@ -34,7 +34,7 @@ func ScrapeMagnitudeData(noaaClient *NoaaClient, vmetriClient *victoria.VMMetric
 		ctx := context.Background()
 		csvData := strings.Join(responseBody[i], ",")
 
-		if err := vmetriClient.SendCSVMetrics(ctx, victoria.NOAA_MAGNITUDE_FORMAT, csvData); err != nil {
+		if err := vmetriClient.SendCSVMetrics(ctx, victoria.NOAA_PLASMA_FORMAT, csvData); err != nil {
 			log.Fatal(err)
 		}
 	}

@@ -1,12 +1,13 @@
 package main
 
 import (
-	"context"
 	"log"
 	"noaa-exporter/config"
 	noaa "noaa-exporter/internal/noaa_client"
 	victoria "noaa-exporter/internal/victoria_metrics_client"
-	"strings"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -16,22 +17,42 @@ func main() {
 		log.Fatal(err)
 	}
 
-	noaaClient := noaa.NewNOAAClient(config.Config.NOAAURL)
-	vmetriClient := victoria.NewVMMetricsClient(config.Config.VMMetricsURL)
+	// prepare graceful shutdown
+	systemInterrupt := make(chan os.Signal, 1)
+	signal.Notify(systemInterrupt, os.Interrupt, syscall.SIGTERM)
+	defer signal.Stop(systemInterrupt)
 
-	for { // get new data chunk ones a day
-		log.Println("scraping daily data")
-		dailyResponse := noaaClient.GetDailyMagnitude()
-
-		var responseBody [][]string
-		dailyResponse.ExtractResult(&responseBody)
-
-		for i := 1; i < len(responseBody); i++ {
-			ctx := context.Background()
-			csvData := strings.Join(responseBody[i], ",")
-
-			vmetriClient.SendMetrics(ctx, victoria.NOAA_DATA_FORMAT, csvData)
-		}
-		time.Sleep(24 * time.Hour)
+	// register data scrapers
+	scrapers := []func(noaaClient *noaa.NoaaClient, vmetriClient *victoria.VMMetricsClient){
+		noaa.ScrapeMagnitudeData,
+		noaa.ScrapePlasmaData,
 	}
+
+	stopChan := make(chan struct{}, 1)
+	for _, scraper := range scrapers {
+		go func(c chan struct{}, scraper func(noaaClient *noaa.NoaaClient, vmetriClient *victoria.VMMetricsClient)) { // run daily data scraper
+
+			noaaClient := noaa.NewNOAAClient(config.Config.NOAAURL)
+			vmetriClient := victoria.NewVMMetricsClient(config.Config.VMMetricsURL)
+
+			// first time data scraping
+			// used only on service start
+			scraper(noaaClient, vmetriClient)
+			for {
+				select {
+
+				case <-time.Tick(24 * time.Hour):
+					scraper(noaaClient, vmetriClient)
+				case <-c:
+					log.Println("scraper stopped")
+					return
+				}
+			}
+		}(stopChan, scraper)
+	}
+
+	sig := <-systemInterrupt
+	log.Println("got a signal", sig)
+	log.Println("stopping goroutines")
+	close(stopChan)
 }

@@ -10,9 +10,7 @@ import (
 )
 
 const (
-	NOAA_PATH   = "/products/solar-wind/"
-	NOAA_DAILY  = "mag-1-day.json"
-	NOAA_HOURLY = "mag-2-hour.json"
+	NOAA_PATH = "/products/solar-wind/"
 )
 
 type NoaaClient struct {
