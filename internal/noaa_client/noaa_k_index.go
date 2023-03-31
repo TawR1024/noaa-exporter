@@ -34,7 +34,7 @@ func ScrapeKIndex(noaaClient *NoaaClient, vmetriClient *victoria.VMMetricsClient
 		ctx := context.Background()
 		csvData := strings.Join(responseBody[i], ",")
 
-		if err := vmetriClient.SendCSVMetrics(ctx, victoria.NOAA_PLASMA_FORMAT, csvData); err != nil {
+		if err := vmetriClient.SendCSVMetrics(ctx, victoria.NOAA_KINDEX_FORMAT, csvData); err != nil {
 			log.Fatal(err)
 		}
 	}
