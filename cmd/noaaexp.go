@@ -26,6 +26,7 @@ func main() {
 	scrapers := []func(noaaClient *noaa.NoaaClient, vmetriClient *victoria.VMMetricsClient){
 		noaa.ScrapeMagnitudeData,
 		noaa.ScrapePlasmaData,
+		noaa.ScrapeKIndex,
 	}
 
 	stopChan := make(chan struct{}, 1)

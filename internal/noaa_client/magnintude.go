@@ -8,12 +8,12 @@ import (
 	"strings"
 )
 
-const NOAA_DAILY_MAG = "mag-1-day.json"
+const DAILY_MAG = "mag-1-day.json"
 
 func (nc *NoaaClient) GetDailyMagnitude() *ResponseResult {
 	log.Println("getting daily data")
 	ctx := context.Background()
-	result, err := nc.DoRequest(ctx, http.MethodGet, NOAA_DAILY_MAG, nil)
+	result, err := nc.DoRequest(ctx, http.MethodGet, NOAA_SOLAR_WIND, DAILY_MAG, nil)
 	if err != nil {
 		log.Fatal("some errors during request")
 	}

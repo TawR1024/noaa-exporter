@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	NOAA_PATH = "/products/solar-wind/"
+	NOAA_PRODUCTS   = "/products/"
+	NOAA_SOLAR_WIND = NOAA_PRODUCTS + "solar-wind/"
 )
 
 type NoaaClient struct {
@@ -39,8 +40,8 @@ func (result *ResponseResult) ExtractResult(to interface{}) error {
 	return nil
 }
 
-func (nc *NoaaClient) DoRequest(ctx context.Context, method, timeRange string, body io.Reader) (*ResponseResult, error) {
-	request, err := http.NewRequest(method, nc.URL+NOAA_PATH+timeRange, body)
+func (nc *NoaaClient) DoRequest(ctx context.Context, method, path, file string, body io.Reader) (*ResponseResult, error) {
+	request, err := http.NewRequest(method, nc.URL+path+file, body)
 	if err != nil {
 		return nil, err
 	}

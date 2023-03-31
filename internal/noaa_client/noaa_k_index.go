@@ -8,12 +8,12 @@ import (
 	"strings"
 )
 
-const DAILY_PLASMA = "plasma-1-day.json"
+const KINDEX = "noaa-planetary-k-index.json"
 
-func (nc *NoaaClient) GetPDailyPlasma() *ResponseResult {
-	log.Println("getting daily data")
+func (nc *NoaaClient) GetDailyKIndex() *ResponseResult {
+	log.Println("getting daily k index data")
 	ctx := context.Background()
-	result, err := nc.DoRequest(ctx, http.MethodGet, NOAA_SOLAR_WIND, DAILY_PLASMA, nil)
+	result, err := nc.DoRequest(ctx, http.MethodGet, NOAA_PRODUCTS, KINDEX, nil)
 	if err != nil {
 		log.Fatal("some errors during request")
 	}
@@ -21,9 +21,9 @@ func (nc *NoaaClient) GetPDailyPlasma() *ResponseResult {
 	return result
 }
 
-func ScrapePlasmaData(noaaClient *NoaaClient, vmetriClient *victoria.VMMetricsClient) {
-	log.Println("scraping daily plasma data")
-	dailyResponse := noaaClient.GetPDailyPlasma()
+func ScrapeKIndex(noaaClient *NoaaClient, vmetriClient *victoria.VMMetricsClient) {
+	log.Println("scraping daily k index data")
+	dailyResponse := noaaClient.GetDailyKIndex()
 
 	var responseBody [][]string
 	if err := dailyResponse.ExtractResult(&responseBody); err != nil {
