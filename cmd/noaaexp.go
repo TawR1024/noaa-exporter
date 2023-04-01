@@ -41,8 +41,7 @@ func main() {
 			scraper(noaaClient, vmetriClient)
 			for {
 				select {
-
-				case <-time.Tick(24 * time.Hour):
+				case <-time.Tick(time.Duration(config.Config.DataScrapePeriodH) * time.Hour):
 					scraper(noaaClient, vmetriClient)
 				case <-c:
 					log.Println("scraper stopped")

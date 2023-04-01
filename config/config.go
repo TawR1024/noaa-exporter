@@ -9,8 +9,9 @@ import (
 var Config *AppConfig
 
 type AppConfig struct {
-	NOAAURL      string `yaml:"noaa_url"`
-	VMMetricsURL string `yaml:"vm_metrics_url"`
+	NOAAURL           string `yaml:"noaa_url"`
+	VMMetricsURL      string `yaml:"vm_metrics_url"`
+	DataScrapePeriodH int    `yaml:"data_scape_period_hours"`
 }
 
 func ReadFromFile(path string) error {

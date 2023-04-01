@@ -11,7 +11,7 @@ import (
 const DAILY_MAG = "mag-1-day.json"
 
 func (nc *NoaaClient) GetDailyMagnitude() *ResponseResult {
-	log.Println("getting daily data")
+	log.Println("getting daily magnitude data")
 	ctx := context.Background()
 	result, err := nc.DoRequest(ctx, http.MethodGet, NOAA_SOLAR_WIND, DAILY_MAG, nil)
 	if err != nil {
@@ -22,7 +22,7 @@ func (nc *NoaaClient) GetDailyMagnitude() *ResponseResult {
 }
 
 func ScrapeMagnitudeData(noaaClient *NoaaClient, vmetriClient *victoria.VMMetricsClient) {
-	log.Println("scraping daily magnitude data")
+	log.Println("loading daily magnitude data to vmetrics")
 	dailyResponse := noaaClient.GetDailyMagnitude()
 
 	var responseBody [][]string

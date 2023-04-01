@@ -22,7 +22,7 @@ func (nc *NoaaClient) GetDailyKIndex() *ResponseResult {
 }
 
 func ScrapeKIndex(noaaClient *NoaaClient, vmetriClient *victoria.VMMetricsClient) {
-	log.Println("scraping daily k index data")
+	log.Println("loading daily k index data to vmetrics")
 	dailyResponse := noaaClient.GetDailyKIndex()
 
 	var responseBody [][]string

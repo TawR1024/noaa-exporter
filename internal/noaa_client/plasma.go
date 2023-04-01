@@ -22,7 +22,7 @@ func (nc *NoaaClient) GetPDailyPlasma() *ResponseResult {
 }
 
 func ScrapePlasmaData(noaaClient *NoaaClient, vmetriClient *victoria.VMMetricsClient) {
-	log.Println("scraping daily plasma data")
+	log.Println("loading daily plasma data to vmetrics")
 	dailyResponse := noaaClient.GetPDailyPlasma()
 
 	var responseBody [][]string
